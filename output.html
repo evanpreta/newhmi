@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CAV HMI Interface</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="mqtt.min.js"></script>
+</head>
+<body>
+    <div class="dashboard">
+        <!-- Feature Indicators -->
+        <div class="feature-indicators">
+    <button id="DMS-button" class="dms-indicator">DMS Off</button>
+    <button id="AIN-button" class="ain-indicator">AIN Off</button>
+    <button id="DYNO-button" class="dyno-indicator">DYNO Off</button>
+</div>
+
+        
+
+        <!-- Fuel Indicator -->
+        <div class="fuel-indicator">
+            <span>E</span>
+            <div class="fuel-bar">
+                <div class="fuel-level" id="fuel-level"></div>
+            </div>
+            <span>F</span>
+            <span id="fuel-percentage">100%</span>
+        </div>
+        
+
+        <div class="content">
+            <div class="road-view">
+                <div class="lane-line left-line"></div>
+                
+                <div class="lane-line right-line"></div>
+
+                <div class="traffic-light" id="traffic-light">
+                    <div class="light red-light"></div>
+                    <div class="light yellow-light"></div>
+                    <div class="light green-light active"></div>
+                </div>
+
+                <div class="distance-line"></div>
+
+                <div class="distance-info">
+                    <div id="distance">Distance: 50m</div>
+                    <div id="time">Time: 5s</div>
+                </div>
+
+                <div class="car-icon"></div>
+            </div>
+
+            <div class="vehicle-status">
+                <p id="front-motor-temp" class="motor-temp">Front Motor Temp: 0°C</p>
+                <div class="car-model" style="position: relative;">
+                    <img src="cartooncar.png" alt="Car Image" class="car-image">
+                    <div class="wheel front-left"></div>
+                    <div class="wheel front-right"></div>
+                    <div class="wheel rear-left"></div>
+                    <div class="wheel rear-right"></div>
+                </div>
+                <p id="rear-motor-temp" class="motor-temp">Rear Motor Temp: 0°C</p>
+            </div>            
+        </div>
+
+        <!-- Bottom Section with Battery Temp -->
+        <div class="bottom-section">
+            <p class="battery-temp">Battery Temp: <span id="battery-temp">76°C</span></p>
+            <div class="mileage">
+                <p>CACC: <span id="cacc-mileage">27.3 mi</span></p>
+            </div>
+        </div>
+        <div class="drive-mode" id="drive-mode-status">Drive Mode: Parked</div>
+
+        
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

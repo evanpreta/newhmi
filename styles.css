@@ -1,0 +1,323 @@
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: linear-gradient(to top, #233c61, #0a1f36, #000203); /* Darker blue at the bottom to lighter blue at the top */
+    color: white;
+}
+
+
+.dashboard {
+    display: flex;
+    flex-direction: column;
+    height: 90vh;
+    padding: 20px;
+    justify-content: space-between;
+    position: relative;
+}
+
+.fuel-indicator {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.fuel-bar {
+    width: 120px;
+    height: 15px;
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 5px;
+    overflow: hidden;
+    margin: 0 5px;
+    border: 1px solid white;
+}
+
+.fuel-level {
+    height: 100%;
+    width: 100%; /* Default to full tank */
+    background-color: limegreen;
+    transition: width 0.5s ease;
+}
+
+.feature-indicators {
+    display: flex;
+    justify-content: space-evenly;
+    width: 100%;
+    margin-bottom: 10px;
+    margin-left: -100px; /* Adjust this value as needed to move buttons left */
+}
+
+
+.dms-indicator {
+    position: absolute;
+    
+    left: 270px;
+    padding: 20px; /* Increased padding for a larger button */
+    width: 200px;  /* Wide button */
+    border-radius: 10px;
+    text-align: center;
+    transition: background-color 0.3s ease;
+    box-shadow: 0px 0px 8px rgba(255, 255, 255, 0.1);
+    background-color: #333;
+    color: white;
+    border: none;
+    cursor: pointer;
+    font-size: 18px; /* Larger text */
+}
+
+.ain-indicator {
+    position: absolute;
+    
+    left: 520px;
+    padding: 20px; /* Increased padding for a larger button */
+    width: 200px;  /* Wide button */
+    border-radius: 10px;
+    text-align: center;
+    transition: background-color 0.3s ease;
+    box-shadow: 0px 0px 8px rgba(255, 255, 255, 0.1);
+    background-color: #333;
+    color: white;
+    border: none;
+    cursor: pointer;
+    font-size: 18px; /* Larger text */
+}
+
+.dyno-indicator {
+    position: absolute;
+    
+    left: 770px;
+    padding: 20px; /* Increased padding for a larger button */
+    width: 200px;  /* Wide button */
+    border-radius: 10px;
+    text-align: center;
+    transition: background-color 0.3s ease;
+    box-shadow: 0px 0px 8px rgba(255, 255, 255, 0.1);
+    background-color: #333;
+    color: white;
+    border: none;
+    cursor: pointer;
+    font-size: 18px; /* Larger text */
+}
+
+.indicator.active {
+    background-color: #007BFF; /* Color for active state */
+}
+
+
+.indicator:hover {
+    background-color: #555; /* Slightly darker on hover */
+}
+
+/* Optional: Define the active state if you want CSS-only styling for other cases */
+.indicator.active {
+    background-color: #007BFF; /* Active color */
+}
+
+.content {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    height: 70vh;
+}
+
+.road-view {
+    position: relative;
+    width: 70%;
+    background-color: #1a1a1a;
+    border-radius: 10px;
+    overflow: hidden;
+    margin-right: 20px;
+}
+
+.lane-line {
+    position: absolute;
+    height: 100%;
+    width: 4px;
+    background-color: rgba(255, 255, 255, 0.7);
+    opacity: 0.8;
+    animation: blink 1s infinite alternate;
+}
+
+.left-line {
+    left: 30%;
+}
+
+.right-line {
+    right: 30%;
+}
+
+.car-icon {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 40px;
+    height: 60px;
+    background-color: white;
+    border-radius: 5px;
+}
+
+.traffic-light {
+    position: absolute;
+    top: 10%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 30px;
+    height: 90px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.light {
+    width: 100%;
+    height: 30px;
+    border-radius: 50%;
+    background-color: gray;
+}
+
+.red-light.active {
+    background-color: red;
+}
+
+.yellow-light.active {
+    background-color: yellow;
+}
+
+.green-light.active {
+    background-color: green;
+}
+
+
+.distance-line {
+    position: absolute;
+    top: 10%;
+    bottom: 20px;
+    left: 50%;
+    width: 2px;
+    background-color: white;
+    transform: translateX(-50%);
+    opacity: 0.5;
+}
+
+.distance-info {
+    position: absolute;
+    top: 40%;
+    left: 50%;
+    transform: translateX(-50%);
+    text-align: center;
+    font-size: 18px;
+}
+
+.vehicle-status {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 30%;
+}
+
+.battery-temp {
+    position: absolute;
+    bottom: -30px;
+    right: 10px;
+    font-size: 28px;
+}
+
+.car-model {
+    position: relative;
+    width: 300px;
+    height: 400px;
+}
+
+.car-image {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    z-index: 2;
+}
+
+.wheel {
+    width: 50px;
+    height: 80px;
+    position: absolute;
+    border-radius: 10%;
+    background-color: green;
+    transition: background-color 0.5s ease;
+    z-index: 1; /* Ensure wheels are above the car image */
+}
+
+.car-image {
+    width: 240px;
+    height: 400px;
+    transform: translate(30px, 10px); /* Adjusted for your position */
+    filter: drop-shadow(0 0 3px white); /* Creates a white outline effect */
+}
+
+
+
+.front-left {
+    left: 50px;  /* Set the X position */
+    top: 200px;   /* Set the Y position */
+}
+
+.front-right {
+    left: 200px;  /* Set the X position */
+    top: 200px;   /* Set the Y position */
+}
+
+.rear-left {
+    left: 50px;  /* Set the X position */
+    top: 300px;   /* Set the Y position */
+}
+
+.rear-right {
+    left: 200px;  /* Set the X position */
+    top: 300px;   /* Set the Y position */
+}
+
+.bottom-section {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    padding: 10px;
+    position: relative;
+}
+
+.mileage {
+    position: absolute;
+    bottom: -30px;
+    left: 10px;
+    font-size: 28px;
+}
+
+.motor-temp {
+    text-align: center;
+    font-size: 20px;
+    margin: 20px 0; /* Adjust for spacing above and below the text */
+    line-height: 1.5; /* Adjust for height of the text */
+}
+
+.drive-mode {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    font-size: 24px;
+    font-weight: bold;
+    color: #ffffff; /* Adjust color as needed */
+}
+
+#fuel-percentage {
+    font-size: 18px;
+    margin-left: 10px;
+}
+
+@keyframes blink {
+    0% {
+        opacity: 0.5;
+    }
+    100% {
+        opacity: 1;
+    }
+}
