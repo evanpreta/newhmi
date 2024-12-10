@@ -45,12 +45,15 @@ window.onload = function () {
                 break;
             case 'hmi/pcm/drive_mode_active':
                 let driveModeText = 'Drive Mode: ';
-                if (data === 0) {
+                const mode = Number(data); // Convert to a number
+                if (mode === 0) {
                     driveModeText += 'Default Drive';
-                } else if (data === 1) {
+                } else if (mode === 1) {
                     driveModeText += 'Performance Drive';
-                } else if (data === 2) {
+                } else if (mode === 2) {
                     driveModeText += 'ECO Drive';
+                } else {
+                    driveModeText += 'Unknown Mode'; // Optional for invalid values
                 }
                 document.getElementById('drive-mode-status').innerText = driveModeText;
                 break;
