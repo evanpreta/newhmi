@@ -1,6 +1,5 @@
 import socket
 import struct
-import time
 import paho.mqtt.client as mqtt
 
 # Map identifiers to parameter names
@@ -28,40 +27,37 @@ mqtt_client.connect(mqtt_broker, mqtt_port, 60)
 mqtt_client.loop_start()
 
 def process_message(data):
-    print(f"Raw TCP data: {data}")
     if len(data) == 5:
         identifier, value = struct.unpack('!Bf', data)
-        print(f"Parsed identifier: {identifier}, value: {value}")
         parameter_name = identifier_mapping.get(identifier, f"Unknown(0x{identifier:02X})")
         if parameter_name in parameter_to_topic:
             mqtt_topic = parameter_to_topic[parameter_name]
-            print(f"Publishing to MQTT: {mqtt_topic} -> {value}")
             mqtt_client.publish(mqtt_topic, str(value))
-        else:
-            print(f"Unrecognized identifier: {identifier}")
-    else:
-        print("Received data is not 5 bytes. Invalid format.")
+
+def handle_client_connection(conn, addr):
+    print(f"Connection established with {addr}")
+    try:
+        while True:
+            data = conn.recv(5)
+            if not data:
+                print(f"Client {addr} disconnected.")
+                break
+            process_message(data)
+    except (ConnectionResetError, BrokenPipeError):
+        print(f"Connection with {addr} lost.")
+    finally:
+        conn.close()
 
 def start_tcp_server(host, port):
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as server_socket:
+        server_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         server_socket.bind((host, port))
         server_socket.listen(1)
         print(f"Listening for TCP connections on {host}:{port}")
 
-        # Wait for a single connection
-        conn, addr = server_socket.accept()
-        print(f"Connection established with {addr}")
-
         while True:
-            try:
-                data = conn.recv(5)
-                if not data:
-                    print("Client disconnected.")
-                    break
-                process_message(data)
-            except ConnectionResetError:
-                print("Connection reset by peer.")
-                break
+            conn, addr = server_socket.accept()
+            handle_client_connection(conn, addr)
 
 if __name__ == "__main__":
     host = "0.0.0.0"
