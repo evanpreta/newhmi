@@ -30,13 +30,23 @@ mqtt_client.loop_start()
 
 def process_message(data):
     """Process and publish received Speedgoat data."""
+    print(f"Raw data received: {data} (Length: {len(data)})")  # Debug raw data
+
     if len(data) == 5:
-        identifier, value = struct.unpack('!Bf', data)
-        parameter_name = identifier_mapping.get(identifier, f"Unknown(0x{identifier:02X})")
-        if parameter_name in parameter_to_topic:
-            mqtt_topic = parameter_to_topic[parameter_name]
-            print(f"Publishing to MQTT: {mqtt_topic} -> {value}")
-            mqtt_client.publish(mqtt_topic, str(value))
+        try:
+            identifier, value = struct.unpack('!Bf', data)
+            print(f"Parsed Identifier: {identifier}, Value: {value}")  # Debug parsed values
+            parameter_name = identifier_mapping.get(identifier, f"Unknown(0x{identifier:02X})")
+            if parameter_name in parameter_to_topic:
+                mqtt_topic = parameter_to_topic[parameter_name]
+                print(f"Publishing to MQTT: {mqtt_topic} -> {value}")  # Debug MQTT publishing
+                mqtt_client.publish(mqtt_topic, str(value))
+            else:
+                print(f"Unknown identifier received: {identifier}")
+        except struct.error as e:
+            print(f"Error unpacking data: {e}")
+    else:
+        print("Invalid data length received. Expected 5 bytes.")
 
 def connect_to_speedgoat(host, port):
     """Connect to the Speedgoat and process incoming data."""
