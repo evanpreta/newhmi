@@ -9,14 +9,14 @@ window.onload = function () {
         const topics = [
             'hmi/pcm/battery_soc',
             'hmi/pcm/hv_battery_pack_temp',
-            'hmi/pcm/cacc_mileage_accumulation',
+            'hmi/cav/cacc_mileage_accumulation',
             'hmi/pcm/drive_mode_active',
-            'hmi/pcm/distance_to_lead_vehicle',
+            'hmi/cav/distance_to_lead_vehicle',
             'hmi/pcm/front_edu_reported_temp',
             'hmi/pcm/back_edu_reported_temp',
             'hmi/pcm/front_axle_power',
             'hmi/pcm/rear_axle_power',
-            'hmi/pcm/traffic_light_state',
+            'hmi/cav/traffic_light_state',
         ];
 
         client.subscribe(topics, (err) => {
@@ -40,7 +40,7 @@ window.onload = function () {
             case 'hmi/pcm/hv_battery_pack_temp':
                 document.getElementById('battery-temp').innerText = `${data}°C`;
                 break;
-            case 'hmi/pcm/cacc_mileage_accumulation':
+            case 'hmi/cav/cacc_mileage_accumulation':
                 document.getElementById('cacc-mileage').innerText = `${data} mi`;
                 break;
             case 'hmi/pcm/drive_mode_active':
@@ -57,7 +57,7 @@ window.onload = function () {
                 }
                 document.getElementById('drive-mode-status').innerText = driveModeText;
                 break;
-            case 'hmi/pcm/distance_to_lead_vehicle':
+            case 'hmi/cav/distance_to_lead_vehicle':
                 document.getElementById('distance').innerText = `Distance: ${data}m`;
                 break;
             case 'hmi/pcm/front_edu_reported_temp':
@@ -78,7 +78,7 @@ window.onload = function () {
                     wheel.style.backgroundColor = data === '0' ? 'red' : 'green';
                 });
                 break;
-            case 'hmi/pcm/traffic_light_state':
+            case 'hmi/cav/traffic_light_state':
                 updateTrafficLightState(Number(data));
                 break;
         }
