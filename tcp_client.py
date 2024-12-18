@@ -11,7 +11,7 @@ identifier_mapping = {
     0x04: 'rear_motor_temp',
     0x05: 'drive_mode',
     0x06: 'instantaneous_power_rear',
-    0x06: 'instantaneous_power_front'
+    0x07: 'instantaneous_power_front'
 }
 
 # Map parameters to MQTT topics
