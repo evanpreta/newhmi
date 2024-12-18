@@ -1,112 +1,105 @@
+import socket
+import struct
+import time
+import paho.mqtt.client as mqtt
 
-window.onload = function () {
-    const client = mqtt.connect('ws://localhost:9001'); // Connect to the local MQTT broker
+# Map identifiers to parameter names
+identifier_mapping = {
+    0x01: 'battery_soc',
+    0x02: 'temperature',
+    0x03: 'front_motor_temp',
+    0x04: 'rear_motor_temp',
+    0x05: 'drive_mode',
+    0x06: 'instantaneous_power'
+}
 
-    client.on('connect', () => {
-        console.log('Connected to MQTT broker');
+# Map parameters to MQTT topics
+parameter_to_topic = {
+    'battery_soc': 'hmi/pcm/battery_soc',
+    'temperature': 'hmi/pcm/hv_battery_pack_temp',
+    'front_motor_temp': 'hmi/pcm/front_edu_reported_temp',
+    'rear_motor_temp': 'hmi/pcm/back_edu_reported_temp',
+    'drive_mode': 'hmi/pcm/drive_mode_active',
+    'instantaneous_power': 'hmi/pcm/front_axle_power',
+    'instantaneous_power': 'hmi/pcm/rear_axle_power'
+}
 
-        // Subscribe to relevant topics
-        const topics = [
-            'hmi/pcm/battery_soc',
-            'hmi/pcm/hv_battery_pack_temp',
-            'hmi/cav/cacc_mileage_accumulation',
-            'hmi/pcm/drive_mode_active',
-            'hmi/cav/distance_to_lead_vehicle',
-            'hmi/pcm/front_edu_reported_temp',
-            'hmi/pcm/back_edu_reported_temp',
-            'hmi/pcm/front_axle_power',
-            'hmi/pcm/rear_axle_power',
-            'hmi/cav/traffic_light_state',
-        ];
+# MQTT settings
+mqtt_broker = "localhost"
+mqtt_port = 1883
+mqtt_client = mqtt.Client(client_id="tcp_to_mqtt", protocol=mqtt.MQTTv311)
+mqtt_client.connect(mqtt_broker, mqtt_port, 60)
+mqtt_client.loop_start()
 
-        client.subscribe(topics, (err) => {
-            if (err) {
-                console.error('Failed to subscribe to topics:', err);
-            } else {
-                console.log('Subscribed to topics:', topics.join(', '));
-            }
-        });
-    });
+# Dictionary to store the last valid motor temperature values
+last_valid_motor_temps = {
+    'front_motor_temp': None,
+    'rear_motor_temp': None
+}
 
-    client.on('message', (topic, message) => {
-        const data = message.toString();
-        console.log(`Message received on ${topic}: ${data}`);
+def process_message(data):
+    """Process and publish received Speedgoat data."""
+    print(f"Raw data received: {data} (Length: {len(data)})")  # Debug raw data
 
-        switch (topic) {
-            case 'hmi/pcm/battery_soc':
-                document.getElementById('fuel-percentage').innerText = `${data}%`;
-                document.getElementById('fuel-level').style.width = `${data}%`;
-                break;
-            case 'hmi/pcm/hv_battery_pack_temp':
-                document.getElementById('battery-temp').innerText = `${data}°C`;
-                break;
-            case 'hmi/cav/cacc_mileage_accumulation':
-                document.getElementById('cacc-mileage').innerText = `${data} mi`;
-                break;
-            case 'hmi/pcm/drive_mode_active':
-                let driveModeText = 'Drive Mode: ';
-                const mode = Number(data); // Convert to a number
-                if (mode === 0) {
-                    driveModeText += 'Default Drive';
-                } else if (mode === 1) {
-                    driveModeText += 'Performance Drive';
-                } else if (mode === 2) {
-                    driveModeText += 'ECO Drive';
-                } else {
-                    driveModeText += 'Unknown Mode'; // Optional for invalid values
-                }
-                document.getElementById('drive-mode-status').innerText = driveModeText;
-                break;
-            case 'hmi/cav/distance_to_lead_vehicle':
-                document.getElementById('distance').innerText = `Distance: ${data}m`;
-                break;
-            case 'hmi/pcm/front_edu_reported_temp':
-                document.getElementById('front-motor-temp').innerText = `Front Motor Temp: ${data}°C`;
-                break;
-            case 'hmi/pcm/back_edu_reported_temp':
-                document.getElementById('rear-motor-temp').innerText = `Rear Motor Temp: ${data}°C`;
-                break;
-            case 'hmi/pcm/front_axle_power':
-                const frontWheels = document.querySelectorAll('.wheel.front-left, .wheel.front-right');
-                frontWheels.forEach(wheel => {
-                    wheel.style.backgroundColor = data === '0' ? 'red' : 'green';
-                });
-                break;
-            case 'hmi/pcm/rear_axle_power':
-                const rearWheels = document.querySelectorAll('.wheel.rear-left, .wheel.rear-right');
-                rearWheels.forEach(wheel => {
-                    wheel.style.backgroundColor = data === '0' ? 'red' : 'green';
-                });
-                break;
-            case 'hmi/cav/traffic_light_state':
-                updateTrafficLightState(Number(data));
-                break;
-        }
-    });
+    if len(data) == 3:  # Expecting 3 bytes
+        try:
+            # Unpack 1 byte (identifier) + 2 bytes (signed integer value)
+            identifier, value = struct.unpack('!Bh', data)
+            print(f"Parsed Identifier: {identifier}, Value: {value}")  # Debug parsed values
+            parameter_name = identifier_mapping.get(identifier, f"Unknown(0x{identifier:02X})")
+            
+            # Multiply battery_soc by 100
+            if parameter_name == 'battery_soc':
+                value *= 100  # Apply the multiplier
+                print(f"Modified battery_soc value: {value}")
+            
+            # Handle motor temperature validation
+            if parameter_name in ['front_motor_temp', 'rear_motor_temp']:
+                if 15 <= value <= 35:  # Check if value is in the valid range
+                    last_valid_motor_temps[parameter_name] = value
+                    print(f"Valid {parameter_name} value: {value}")
+                else:
+                    # Use the last valid value if out of range
+                    value = last_valid_motor_temps.get(parameter_name)
+                    if value is not None:
+                        print(f"Ignoring invalid {parameter_name} value. Using last valid value: {value}")
+                    else:
+                        print(f"Ignoring invalid {parameter_name} value. No previous valid value available.")
+                        return  # Skip publishing if no valid value exists
+            
+            if parameter_name in parameter_to_topic:
+                mqtt_topic = parameter_to_topic[parameter_name]
+                print(f"Publishing to MQTT: {mqtt_topic} -> {value}")  # Debug MQTT publishing
+                mqtt_client.publish(mqtt_topic, str(value))
+            else:
+                print(f"Unknown identifier received: {identifier}")
+        except struct.error as e:
+            print(f"Error unpacking data: {e}")
+    else:
+        print("Invalid data length received. Expected 3 bytes.")
 
-    client.on('error', (err) => {
-        console.error('MQTT client error:', err);
-    });
+def connect_to_speedgoat(host, port):
+    """Connect to the Speedgoat and process incoming data."""
+    while True:  # Reconnect loop
+        try:
+            print(f"Connecting to Speedgoat at {host}:{port}...")
+            with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as client_socket:
+                client_socket.connect((host, port))
+                print(f"Connected to Speedgoat at {host}:{port}")
+                
+                while True:
+                    data = client_socket.recv(3)  # Adjusted to receive 3 bytes
+                    if not data:
+                        print("Connection closed by Speedgoat.")
+                        break
+                    process_message(data)
+        except (ConnectionRefusedError, ConnectionResetError, socket.timeout) as e:
+            print(f"Connection error: {e}. Retrying in 5 seconds...")
+            time.sleep(5)  # Wait before retrying
 
-    function updateTrafficLightState(state) {
-        console.log('Updating traffic light with state:', state);
+if __name__ == "__main__":
+    # Speedgoat settings
+    speedgoat_host = "10.10.10.1"  # Replace with Speedgoat's IP address
+    speedgoat_port = 1048         # Replace with Speedgoat's listening port
 
-        const redLight = document.querySelector('.red-light');
-        const yellowLight = document.querySelector('.yellow-light');
-        const greenLight = document.querySelector('.green-light');
-
-        // Clear active class from all lights
-        redLight.classList.remove('active');
-        yellowLight.classList.remove('active');
-        greenLight.classList.remove('active');
-
-        // Add active class based on traffic light state
-        if (state === 0) {
-            redLight.classList.add('active');
-        } else if (state === 1) {
-            yellowLight.classList.add('active');
-        } else if (state === 2) {
-            greenLight.classList.add('active');
-        }
-    }
-};
+    connect_to_speedgoat(speedgoat_host, speedgoat_port)
