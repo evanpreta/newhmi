@@ -259,12 +259,12 @@ body {
 
 .front-left {
     left: 50px;  /* Set the X position */
-    top: 200px;   /* Set the Y position */
+    top: 100px;   /* Set the Y position */
 }
 
 .front-right {
     left: 200px;  /* Set the X position */
-    top: 200px;   /* Set the Y position */
+    top: 100px;   /* Set the Y position */
 }
 
 .rear-left {
