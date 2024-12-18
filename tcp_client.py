@@ -31,6 +31,12 @@ mqtt_client = mqtt.Client(client_id="tcp_to_mqtt", protocol=mqtt.MQTTv311)
 mqtt_client.connect(mqtt_broker, mqtt_port, 60)
 mqtt_client.loop_start()
 
+# Dictionary to store the last valid motor temperature values
+last_valid_motor_temps = {
+    'front_motor_temp': None,
+    'rear_motor_temp': None
+}
+
 def process_message(data):
     """Process and publish received Speedgoat data."""
     print(f"Raw data received: {data} (Length: {len(data)})")  # Debug raw data
@@ -46,6 +52,20 @@ def process_message(data):
             if parameter_name == 'battery_soc':
                 value *= 100  # Apply the multiplier
                 print(f"Modified battery_soc value: {value}")
+            
+            # Handle motor temperature validation
+            if parameter_name in ['front_motor_temp', 'rear_motor_temp']:
+                if 15 <= value <= 35:  # Check if value is in the valid range
+                    last_valid_motor_temps[parameter_name] = value
+                    print(f"Valid {parameter_name} value: {value}")
+                else:
+                    # Use the last valid value if out of range
+                    value = last_valid_motor_temps.get(parameter_name)
+                    if value is not None:
+                        print(f"Ignoring invalid {parameter_name} value. Using last valid value: {value}")
+                    else:
+                        print(f"Ignoring invalid {parameter_name} value. No previous valid value available.")
+                        return  # Skip publishing if no valid value exists
             
             if parameter_name in parameter_to_topic:
                 mqtt_topic = parameter_to_topic[parameter_name]
