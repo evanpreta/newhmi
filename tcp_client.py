@@ -9,7 +9,7 @@ identifier_mapping = {
     0x02: 'temperature',
     0x03: 'front_motor_temp',
     0x04: 'rear_motor_temp',
-    0x05: 'drive_mode'
+    0x05: 'drive_mode',
     0x06: 'instantaneous_power'
 }
 
@@ -19,9 +19,9 @@ parameter_to_topic = {
     'temperature': 'hmi/pcm/hv_battery_pack_temp',
     'front_motor_temp': 'hmi/pcm/front_edu_reported_temp',
     'rear_motor_temp': 'hmi/pcm/back_edu_reported_temp',
-    'drive_mode': 'hmi/pcm/drive_mode_active'
-    'instantaneous_power' : 'hmi/pcm/front_axle_power'
-    'instantaneous_power' : 'hmi/pcm/rear_axle_power'
+    'drive_mode': 'hmi/pcm/drive_mode_active',
+    'instantaneous_power': 'hmi/pcm/front_axle_power',
+    'instantaneous_power': 'hmi/pcm/rear_axle_power'
 }
 
 # MQTT settings
@@ -41,6 +41,12 @@ def process_message(data):
             identifier, value = struct.unpack('!Bh', data)
             print(f"Parsed Identifier: {identifier}, Value: {value}")  # Debug parsed values
             parameter_name = identifier_mapping.get(identifier, f"Unknown(0x{identifier:02X})")
+            
+            # Multiply battery_soc by 100
+            if parameter_name == 'battery_soc':
+                value *= 100  # Apply the multiplier
+                print(f"Modified battery_soc value: {value}")
+            
             if parameter_name in parameter_to_topic:
                 mqtt_topic = parameter_to_topic[parameter_name]
                 print(f"Publishing to MQTT: {mqtt_topic} -> {value}")  # Debug MQTT publishing
