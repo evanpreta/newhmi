@@ -17,6 +17,10 @@ window.onload = function () {
             'hmi/pcm/front_axle_power',
             'hmi/pcm/rear_axle_power',
             'hmi/cav/traffic_light_state',
+            'hmi/pcm/mil_lamp_edu_01',
+            'hmi/pcm/mil_lamp_edu_02',
+            'hmi/pcm/mil_lamp_edu_03',
+            'hmi/pcm/mil_lamp_edu_04',
         ];
 
         client.subscribe(topics, (err) => {
@@ -81,6 +85,18 @@ window.onload = function () {
             case 'hmi/cav/traffic_light_state':
                 updateTrafficLightState(Number(data));
                 break;
+            case 'hmi/pcm/mil_lamp_edu_01':
+            case 'hmi/pcm/mil_lamp_edu_02':
+            case 'hmi/pcm/mil_lamp_edu_03':
+            case 'hmi/pcm/mil_lamp_edu_04':
+                const milLamp = document.querySelector('.mil-lamp');
+                if (data === '1') {
+                    milLamp.classList.add('glow');
+                } else {
+                    milLamp.classList.remove('glow');
+                }
+                break;
+
         }
     });
 

@@ -1,7 +1,8 @@
 body {
     margin: 0;
     font-family: Arial, sans-serif;
-    background: linear-gradient(to top, #233c61, #0a1f36, #000203); /* Darker blue at the bottom to lighter blue at the top */
+    background: linear-gradient(to top, #233c61, #0a1f36, #000203);
+    /* Darker blue at the bottom to lighter blue at the top */
     color: white;
 }
 
@@ -36,7 +37,8 @@ body {
 
 .fuel-level {
     height: 100%;
-    width: 100%; /* Default to full tank */
+    width: 100%;
+    /* Default to full tank */
     background-color: limegreen;
     transition: width 0.5s ease;
 }
@@ -46,16 +48,19 @@ body {
     justify-content: space-evenly;
     width: 100%;
     margin-bottom: 10px;
-    margin-left: -100px; /* Adjust this value as needed to move buttons left */
+    margin-left: -100px;
+    /* Adjust this value as needed to move buttons left */
 }
 
 
 .dms-indicator {
     position: absolute;
-    
+
     left: 270px;
-    padding: 20px; /* Increased padding for a larger button */
-    width: 200px;  /* Wide button */
+    padding: 20px;
+    /* Increased padding for a larger button */
+    width: 200px;
+    /* Wide button */
     border-radius: 10px;
     text-align: center;
     transition: background-color 0.3s ease;
@@ -64,15 +69,18 @@ body {
     color: white;
     border: none;
     cursor: pointer;
-    font-size: 18px; /* Larger text */
+    font-size: 18px;
+    /* Larger text */
 }
 
 .ain-indicator {
     position: absolute;
-    
+
     left: 520px;
-    padding: 20px; /* Increased padding for a larger button */
-    width: 200px;  /* Wide button */
+    padding: 20px;
+    /* Increased padding for a larger button */
+    width: 200px;
+    /* Wide button */
     border-radius: 10px;
     text-align: center;
     transition: background-color 0.3s ease;
@@ -81,15 +89,18 @@ body {
     color: white;
     border: none;
     cursor: pointer;
-    font-size: 18px; /* Larger text */
+    font-size: 18px;
+    /* Larger text */
 }
 
 .dyno-indicator {
     position: absolute;
-    
+
     left: 770px;
-    padding: 20px; /* Increased padding for a larger button */
-    width: 200px;  /* Wide button */
+    padding: 20px;
+    /* Increased padding for a larger button */
+    width: 200px;
+    /* Wide button */
     border-radius: 10px;
     text-align: center;
     transition: background-color 0.3s ease;
@@ -98,21 +109,25 @@ body {
     color: white;
     border: none;
     cursor: pointer;
-    font-size: 18px; /* Larger text */
+    font-size: 18px;
+    /* Larger text */
 }
 
 .indicator.active {
-    background-color: #007BFF; /* Color for active state */
+    background-color: #007BFF;
+    /* Color for active state */
 }
 
 
 .indicator:hover {
-    background-color: #555; /* Slightly darker on hover */
+    background-color: #555;
+    /* Slightly darker on hover */
 }
 
 /* Optional: Define the active state if you want CSS-only styling for other cases */
 .indicator.active {
-    background-color: #007BFF; /* Active color */
+    background-color: #007BFF;
+    /* Active color */
 }
 
 .content {
@@ -245,36 +260,47 @@ body {
     border-radius: 10%;
     background-color: green;
     transition: background-color 0.5s ease;
-    z-index: 1; /* Ensure wheels are above the car image */
+    z-index: 1;
+    /* Ensure wheels are above the car image */
 }
 
 .car-image {
     width: 240px;
     height: 400px;
-    transform: translate(30px, 10px); /* Adjusted for your position */
-    filter: drop-shadow(0 0 3px white); /* Creates a white outline effect */
+    transform: translate(30px, 10px);
+    /* Adjusted for your position */
+    filter: drop-shadow(0 0 3px white);
+    /* Creates a white outline effect */
 }
 
 
 
 .front-left {
-    left: 50px;  /* Set the X position */
-    top: 60px;   /* Set the Y position */
+    left: 50px;
+    /* Set the X position */
+    top: 60px;
+    /* Set the Y position */
 }
 
 .front-right {
-    left: 200px;  /* Set the X position */
-    top: 60px;   /* Set the Y position */
+    left: 200px;
+    /* Set the X position */
+    top: 60px;
+    /* Set the Y position */
 }
 
 .rear-left {
-    left: 50px;  /* Set the X position */
-    top: 300px;   /* Set the Y position */
+    left: 50px;
+    /* Set the X position */
+    top: 300px;
+    /* Set the Y position */
 }
 
 .rear-right {
-    left: 200px;  /* Set the X position */
-    top: 300px;   /* Set the Y position */
+    left: 200px;
+    /* Set the X position */
+    top: 300px;
+    /* Set the Y position */
 }
 
 .bottom-section {
@@ -295,8 +321,10 @@ body {
 .motor-temp {
     text-align: center;
     font-size: 20px;
-    margin: 20px 0; /* Adjust for spacing above and below the text */
-    line-height: 1.5; /* Adjust for height of the text */
+    margin: 20px 0;
+    /* Adjust for spacing above and below the text */
+    line-height: 1.5;
+    /* Adjust for height of the text */
 }
 
 .drive-mode {
@@ -305,7 +333,8 @@ body {
     left: 10px;
     font-size: 24px;
     font-weight: bold;
-    color: #ffffff; /* Adjust color as needed */
+    color: #ffffff;
+    /* Adjust color as needed */
 }
 
 #fuel-percentage {
@@ -313,10 +342,25 @@ body {
     margin-left: 10px;
 }
 
+.mil-lamp {
+    position: absolute;
+    bottom: 10px;
+    right: 725px;
+    width: 90px;
+    /* Adjust size as needed */
+    height: auto;
+}
+
+.mil-lamp.glow {
+    filter: drop-shadow(0 0 10px red);
+}
+
+
 @keyframes blink {
     0% {
         opacity: 0.5;
     }
+
     100% {
         opacity: 1;
     }

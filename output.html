@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,16 +8,17 @@
     <link rel="stylesheet" href="styles.css">
     <script src="mqtt.min.js"></script>
 </head>
+
 <body>
     <div class="dashboard">
         <!-- Feature Indicators -->
         <div class="feature-indicators">
-    <button id="DMS-button" class="dms-indicator">DMS Off</button>
-    <button id="AIN-button" class="ain-indicator">AIN Off</button>
-    <button id="DYNO-button" class="dyno-indicator">DYNO Off</button>
-</div>
+            <button id="DMS-button" class="dms-indicator">DMS Off</button>
+            <button id="AIN-button" class="ain-indicator">AIN Off</button>
+            <button id="DYNO-button" class="dyno-indicator">DYNO Off</button>
+        </div>
 
-        
+
 
         <!-- Fuel Indicator -->
         <div class="fuel-indicator">
@@ -27,12 +29,12 @@
             <span>F</span>
             <span id="fuel-percentage">100%</span>
         </div>
-        
+
 
         <div class="content">
             <div class="road-view">
                 <div class="lane-line left-line"></div>
-                
+
                 <div class="lane-line right-line"></div>
 
                 <div class="traffic-light" id="traffic-light">
@@ -61,7 +63,7 @@
                     <div class="wheel rear-right"></div>
                 </div>
                 <p id="rear-motor-temp" class="motor-temp">Rear Motor Temp: 0°C</p>
-            </div>            
+            </div>
         </div>
 
         <!-- Bottom Section with Battery Temp -->
@@ -73,9 +75,10 @@
         </div>
         <div class="drive-mode" id="drive-mode-status">Drive Mode: Parked</div>
 
-        
+        <img src="mil_lamp.png" alt="MIL Lamp" class="mil-lamp">
     </div>
 
     <script src="script.js"></script>
 </body>
+
 </html>
